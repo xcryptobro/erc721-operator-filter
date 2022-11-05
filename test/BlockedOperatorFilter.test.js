@@ -1,18 +1,18 @@
 const { expect } = require("chai");
 
-describe("BlacklistOperatorFilter", () => {
-  let BlacklistOperatorFilter;
+describe("BlockedOperatorFilter", () => {
+  let BlockedOperatorFilter;
   let TransferProxy;
 
   before(async () => {
-    BlacklistOperatorFilter = await ethers.getContractFactory(
-      "BlacklistOperatorFilter"
+    BlockedOperatorFilter = await ethers.getContractFactory(
+      "BlockedOperatorFilter"
     );
     TransferProxy = await ethers.getContractFactory("TransferProxy");
   });
 
   it("lets everyone through by default", async () => {
-    const filter = await BlacklistOperatorFilter.deploy();
+    const filter = await BlockedOperatorFilter.deploy();
     const p1 = await TransferProxy.deploy();
     const [alice, bob] = await ethers.getSigners();
 
@@ -26,7 +26,7 @@ describe("BlacklistOperatorFilter", () => {
   });
 
   it("permits blocking specific addresses", async () => {
-    const filter = await BlacklistOperatorFilter.deploy();
+    const filter = await BlockedOperatorFilter.deploy();
     const p1 = await TransferProxy.deploy();
     const p2 = await TransferProxy.deploy();
     await filter.setAddressBlocked(p1.address, true);
@@ -37,7 +37,7 @@ describe("BlacklistOperatorFilter", () => {
   });
 
   it("permits blocking contracts by implementation", async () => {
-    const filter = await BlacklistOperatorFilter.deploy();
+    const filter = await BlockedOperatorFilter.deploy();
     const p1 = await TransferProxy.deploy();
     const p2 = await TransferProxy.deploy();
     const codeHash = await filter.codeHashOf(p1.address);
@@ -51,18 +51,18 @@ describe("BlacklistOperatorFilter", () => {
   });
 
   it("forbids blocking all EOAs (accounts with empty code)", async () => {
-    const filter = await BlacklistOperatorFilter.deploy();
+    const filter = await BlockedOperatorFilter.deploy();
     const [alice, bob] = await ethers.getSigners();
     const codeHash = await filter.codeHashOf(alice.address);
     expect(codeHash).to.equal(ethers.utils.keccak256([]));
     await expect(filter.setCodeHashBlocked(codeHash, true)).to.be.revertedWith(
-      "BlacklistOperatorFilter: can't block EOAs"
+      "BlockedOperatorFilter: can't block EOAs"
     );
     expect(await filter.mayTransfer(alice.address)).to.equal(true);
   });
 
   it("only permits the owner to change state", async () => {
-    const filter = await BlacklistOperatorFilter.deploy();
+    const filter = await BlockedOperatorFilter.deploy();
     const [owner, notOwner] = await ethers.getSigners();
     await expect(
       filter

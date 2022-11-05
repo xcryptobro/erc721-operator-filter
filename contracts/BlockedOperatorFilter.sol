@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./IOperatorFilter.sol";
 
-contract BlacklistOperatorFilter is Ownable, IOperatorFilter {
+contract BlockedOperatorFilter is Ownable, IOperatorFilter {
     mapping(address => bool) blockedAddresses_;
     mapping(bytes32 => bool) blockedCodeHashes_;
 
@@ -24,7 +24,7 @@ contract BlacklistOperatorFilter is Ownable, IOperatorFilter {
         onlyOwner
     {
         if (codeHash == keccak256(""))
-            revert("BlacklistOperatorFilter: can't block EOAs");
+            revert("BlockedOperatorFilter: can't block EOAs");
         blockedCodeHashes_[codeHash] = blocked;
     }
 

@@ -8,7 +8,7 @@ without paying the required royalties back to the original artists.
 
 The logic to determine which operators are blocked is pluggable via the
 `IOperatorFilter` interface. This repository also provides the
-`BlacklistOperatorFilter` contract, which is a simple implementation of
+`BlockedOperatorFilter` contract, which is a simple implementation of
 `IOperatorFilter` that allows an owner to block specific contracts by
 address or by code implementation.
 
@@ -21,7 +21,7 @@ functionality of `ERC721OperatorFilter`. At a high level, the steps to
 use this functionality look like this:
 
 -   Modify your token contract to extend from `ERC721OperatorFilter`.
--   Deploy a `BlacklistOperatorFilter` contract.
+-   Deploy a `BlockedOperatorFilter` contract.
 -   Deploy your token contract, and call `setOperatorFilter(address)`,
     passing the address of the deployed operator filter.
 -   Call `setAddressBlocked` on the operator filter to block offending
